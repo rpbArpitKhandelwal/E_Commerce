@@ -3,7 +3,7 @@ const express =  require('express');
 const Product = require('../models/product');
 const router = express.Router();
 const {validateProduct , isLoggedIn, isSeller, isProductAuthor} =  require('../middleware');
-const Review = require('../models/review');
+const Review = require('../models/Review');
 
 // displaying all the products
 router.get('/products' , async(req,res)=>{
