@@ -1,26 +1,43 @@
 const mongoose = require('mongoose');
-
-const Product = require('./models/Product');
+const Product = require('./models/product');
 
 const products = [
     {
-        name:"Iphone",
-        img:"https://images.unsplash.com/photo-1726828537956-61ae115d7d7a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aXBob25lJTIwMTZ8ZW58MHx8MHx8fDA%3D",
-        price:120000,
-        desc:"very costly"
+        name:"iphone 14pro",
+        img:'https://images.unsplash.com/photo-1491933382434-500287f9b54b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGFwcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+        price: 140000,
+        desc: "bohat mahenga"
     },
     {
-        name:"macbook",
-        img:"https://images.unsplash.com/photo-1526570207772-784d36084510?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fG1hY2Jvb2t8ZW58MHx8MHx8fDA%3D",
-        price:250000,
-        desc:"very costly, aukaat ke bahar."
+        name:"macbook m2",
+        img:'https://images.unsplash.com/photo-1491933382434-500287f9b54b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGFwcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+        price: 250000,
+        desc: "aukaat ke bahar"
+    },
+    {
+        name:"iwatch",
+        img:'https://images.unsplash.com/photo-1491933382434-500287f9b54b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGFwcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+        price: 70000,
+        desc: "useless product"
+    },
+    {
+        name:"ipad",
+        img:'https://images.unsplash.com/photo-1491933382434-500287f9b54b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGFwcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+        price: 88000,
+        desc: "badiya cheez"
+    },
+    {
+        name:"airpods",
+        img:'https://images.unsplash.com/photo-1491933382434-500287f9b54b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGFwcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+        price: 27000,
+        desc: "vahiyaad thuuu radddi"
     }
-
 ]
 
 async function seedDB(){
+    // await Product.deleteMany({});
     await Product.insertMany(products);
-    console.log("data seeded successfully.")
+    console.log("data seeded successfully")
 }
 
 module.exports = seedDB;
