@@ -1,68 +1,77 @@
-const Product = require("./models/product");
-const { productSchema } = require("./schema");
-const { reviewSchema } = require("./schema");
+const Product = require('./models/Product');
+const { productSchema, reviewSchema } = require('./schema');
 
-const validateProduct = (req,res,next)=>{
-    const {name, img, price , desc} = req.body;
-    const {error} = productSchema.validate({name,img,price,desc});
-    
-    if(error){
-        const msg = error.details.map((err)=>err.message).join(',');
-        return res.render('error' , {err:msg});
+// Validate product with Joi
+const validateProduct = (req, res, next) => {
+    const { name, img, price, desc } = req.body;
+    const { error } = productSchema.validate({ name, img, price, desc });
+    if (error) {
+        req.flash('error', 'Invalid product data');
+        return res.redirect('back');
     }
     next();
-}
+};
 
-const validateReview = (req,res,next)=>{
-
-    const {rating, comment} = req.body;
-    const {error} = reviewSchema.validate({rating,comment});
-
-    if(error){
-        const msg = error.details.map((err)=>err.message).join(',');
-        return res.render('error' , {err:msg});
+// Validate review with Joi
+const validateReview = (req, res, next) => {
+    const { rating, comment } = req.body;
+    const { error } = reviewSchema.validate({ rating, comment });
+    if (error) {
+        req.flash('error', 'Invalid review data');
+        return res.redirect('back');
     }
     next();
-}
+};
 
-const isLoggedIn = (req,res,next)=>{
-
-    if(req.xhr && !req.isAuthenticated()){
-        return res.status(401).send('unauthorised');
-        // console.log(req.xhr);//ajax hai ya nhi hai?
-    }
-
-    if(!req.isAuthenticated()){
-        req.flash('error' , 'You need to login first');
-        return res.redirect('/login')
+// Check if logged in
+const isLoggedIn = (req, res, next) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+        req.flash('error', 'Please login first');
+        return res.redirect('/login');
     }
     next();
-}
+};
 
-const isSeller = (req,res,next)=>{
-    let {id} = req.params;
-    if(!req.user.role){
-        req.flash('error' , 'You donot have the permissions');
-        return res.redirect('/products')
+// Check if seller
+const isSeller = (req, res, next) => {
+    if (!req.user) {
+        req.flash('error', 'Please login first');
+        return res.redirect('/login');
     }
-    else if(req.user.role !== "seller"){
-        req.flash('error' , 'You donot have the permissions');
-        return res.redirect(`/products/${id}`)
-    }
-    next();
-}
-
-const isProductAuthor = async(req,res,next)=>{
-    let {id} = req.params;
-    let product = await Product.findById(id);
-    console.log(product.author , 'author'); //objectid
-    console.log(req.user , 'user'); //objectid
-    if(!product.author.equals(req.user._id)){
-        req.flash('error' , 'You are not the owner of this product');
-        return res.redirect(`/products/${id}`)
+    if (!req.user.role || req.user.role !== 'seller') {
+        req.flash('error', 'You do not have permission to do that');
+        return res.redirect('/products');
     }
     next();
-}
+};
 
+// Check if product author
+const isProductAuthor = async (req, res, next) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
 
-module.exports = {validateProduct ,validateReview , isLoggedIn , isSeller , isProductAuthor } ;
+    if (!product) {
+        req.flash('error', 'Product not found');
+        return res.redirect('/products');
+    }
+
+    if (!req.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+
+    if (!product.author || !product.author.equals(req.user._id)) {
+        req.flash('error', 'You are not the authorised user');
+        return res.redirect('/products');
+    }
+
+    next();
+};
+
+module.exports = {
+    isProductAuthor,
+    isSeller,
+    isLoggedIn,
+    validateReview,
+    validateProduct
+};

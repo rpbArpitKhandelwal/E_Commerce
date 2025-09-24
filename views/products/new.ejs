@@ -1,60 +1,89 @@
-<%-include('../partials/header')%>
-<%-include('../partials/navbar')%>
-<%-include('../partials/flash')%>
 
+<% layout('layouts/boilerplate') %>
 
-<div class="row" style="margin-top: 80px;">
+<%- include('../partials/navbar') %>    
+
+<div class="row">
     <div class="col-6 mx-auto">
-        <form action="/products" method="POST" class="needs-validation" novalidate>
+
+        <form action="/products" method="POST" class="needs-validation" novalidate >
+
+
             <div class="mb-3">
-                <label for="naam" class="form-label">Name: </label>
-                <input type="text" class="form-control" name="name" id="naam" placeholder="Name of Product" required>
+                <label for="naam">Name: </label>
+                <input type="text" class="form-control" name="name" id="naam" placeholder="Name of the product" required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    Please provide a valid city.
+                <div class="invalid-feedback">
+                    Please enter the name field.
                 </div>
             </div>
+
             <div class="mb-3">
-                <label for="imge" class="form-label">Image Url: </label>
-                <input type="text" class="form-control" name="img" id="imge" placeholder="Image URL of Product" required>
+                <label for="img">Image: </label>
+                <input type="text" class="form-control" name="img" id="img" placeholder="Image URL of the product" required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    Please provide a valid city.
+                <div class="invalid-feedback">
+                    Please enter the image URL field.
                 </div>
             </div>
+
             <div class="mb-3">
-                <label for="paisa" class="form-label">Price: </label>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Rs. </span>
-                    <input class="form-control" type="number" name="price" id="paisa" step="any" placeholder="Price of Product" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                    <div id="validationServer03Feedback" class="invalid-feedback">
-                        Please provide a valid city.
-                    </div>
-                </div>
-            </div>
-        
-            <div class="mb-3">
-                <label for="des" class="form-label">Description: </label>
-                <textarea class="form-control"  name="desc" id="des" rows="5" placeholder="Description of Product" required></textarea>
+                <label for="paisa">Price: </label>
+                <input type="number" class="form-control" name="price" id="paisa" placeholder="price of the product" required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    Please provide a valid city.
+                <div class="invalid-feedback">
+                    Please enter the price field.
                 </div>
             </div>
-            <button type="submit" class="btn btn-sm btn-success">Add</button>
+
+            <div class="mb-3">
+                <label for="desc">Description: </label>
+                <textarea name="desc" id="desc" rows="5" placeholder="Description of product" required></textarea>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please enter the Description field.
+                </div>
+            </div>
+            <button class="btn btn-sm btn-success" type="submit">Add Product</button>
+
         </form>
+
     </div>
+        
 </div>
 
 
-<script src="/js/script.js"></script>
-<%-include('../partials/footer')%>
+<script>
+    // iife(immidiately invoked functional expression)
+    (() => {
+    'use strict'
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+    })
+    })()
+</script>
+
+</body>
+</html>
+
+

@@ -1,42 +1,56 @@
-const express = require("express");
-const User = require("../models/User");
-const passport = require("passport");
-const router = express.Router();
+const express = require('express');
+const passport = require('passport');
+const User = require('../models/User');
+const router = express.Router() //mini instance
 
-router.get("/register", (req, res) => {
-  res.render("auth/signup");
-});
+// to show the form of signup
+router.get('/register' , (req,res)=>{
+    res.render('auth/signup');
+})
 
-router.post("/register", async (req, res) => {
-  let { username, password, email, role, gender } = req.body;
-  let user = new User({ username, email, gender, role });
-  let newUser = await User.register(user, password);
-  // res.send(newUser);
-  res.redirect("/login");
-});
+// actually want to register a user in my DB
+router.post('/register' , async(req,res,next)=>{
+    try{
+        let {email,password,username,role} = req.body;
+        const user = new User({email,username,role});
+        const newUser = await User.register(user , password );
+        req.login( newUser , function(err){
+            if(err){return next(err)}
+            req.flash('success' , 'welcome,  you are registed succesfully');
+            return res.redirect('/products');
+        })
+    }
+    catch(e){
+        req.flash('error' , e.message);
+        return res.redirect('/register');   // 🔥 fixed wrong path (/signup → /register)
+    }
+})
 
-router.get("/login", (req, res) => {
-  res.render("auth/login");
-});
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureMessage: true,
-  }),
-  function (req, res) {
-    // console.log(req.user , "User");
-    req.flash("success", `Welcome Back ${req.user.username}`);
-    res.redirect("/products");
-  }
-);
+// to get login form
+router.get('/login' , (req,res)=>{
+    res.render('auth/login');
+})
 
-router.get("/logout", (req, res) => {
-  req.logout(() => {
-    req.flash("success", "Logged out successfully");
-    res.redirect("/login");
-  });
-});
+// to actually login via the db
+router.post('/login', 
+    passport.authenticate('local', { 
+        failureRedirect: '/login', 
+        failureFlash: true       // 🔥 should be failureFlash, not failureMessage
+    }),
+    (req,res)=>{
+        req.flash('success' , 'welcome back')
+        res.redirect('/products');
+})
+
+
+// logout
+router.get('/logout' , (req,res,next)=>{
+    req.logout(function(err){     // 🔥 fixed broken logout
+        if(err){return next(err);}
+        req.flash('success' , 'goodbye friends, see you again')
+        res.redirect('/login');
+    });
+})
 
 module.exports = router;
